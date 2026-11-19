@@ -1,0 +1,28 @@
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+android {
+    namespace = "app.raspisanie"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "app.raspisanie"
+        minSdk = 31
+        targetSdk = 34
+        versionCode = 2
+        versionName = "1.1"
+        ndk { abiFilters += listOf("arm64-v8a") }
+    }
+    buildTypes { release { isMinifyEnabled = false } }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = "17" }
+}
+
+dependencies {
+    implementation("cz.adaptech.tesseract4android:tesseract4android:4.7.0")
+}

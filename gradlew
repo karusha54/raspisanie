@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Gradle start up script for UN*X
+#
+set -e
 GRADLE_VERSION=8.9
 GRADLE_DIST_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
 GRADLE_USER_HOME="${GRADLE_USER_HOME:-$HOME/.gradle}"
