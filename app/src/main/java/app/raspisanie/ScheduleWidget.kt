@@ -30,10 +30,6 @@ class ScheduleWidget : AppWidgetProvider() {
         }
     }
 
-    override fun onDisabled(context: Context) {
-        alarmManager(context).cancel(pending(context))
-    }
-
     companion object {
         const val ACTION_REFRESH = "app.raspisanie.REFRESH"
 
@@ -47,12 +43,26 @@ class ScheduleWidget : AppWidgetProvider() {
 
         fun refresh(c: Context) {
             val mgr = AppWidgetManager.getInstance(c)
-            val ids = mgr.getAppWidgetIds(ComponentName(c, ScheduleWidget::class.java))
-            if (ids.isEmpty()) return
             val now = LocalDateTime.now()
             val st = Schedule.state(c, now)
-            mgr.updateAppWidget(ids, build(c, st, now))
-            scheduleNext(c, st.nextChange)
+            var any = false
+
+            val home = mgr.getAppWidgetIds(ComponentName(c, ScheduleWidget::class.java))
+            if (home.isNotEmpty()) {
+                mgr.updateAppWidget(home, build(c, st, now))
+                any = true
+            }
+            val wide = mgr.getAppWidgetIds(ComponentName(c, LockWidgetWide::class.java))
+            if (wide.isNotEmpty()) {
+                mgr.updateAppWidget(wide, LockViews.wide(c, st, now))
+                any = true
+            }
+            val small = mgr.getAppWidgetIds(ComponentName(c, LockWidgetSmall::class.java))
+            if (small.isNotEmpty()) {
+                mgr.updateAppWidget(small, LockViews.small(c, st, now))
+                any = true
+            }
+            if (any) scheduleNext(c, st.nextChange)
         }
 
         private fun scheduleNext(c: Context, at: LocalDateTime) {
