@@ -23,10 +23,6 @@ android {
     kotlinOptions { jvmTarget = "17" }
 }
 
-repositories {
-    maven { url = uri("https://jitpack.io") }
-}
-
 dependencies {
-    implementation("cz.adaptech.tesseract4android:tesseract4android:4.7.0")
+    implementation("cz.adaptech.tesseract4android:tesseract4android:4.9.0")
 }
