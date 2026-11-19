@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:description="@string/widget_desc"
     android:initialLayout="@layout/lock_small"
-    android:minWidth="110dp"
-    android:minHeight="110dp"
-    android:resizeMode="none"
+    android:minWidth="124dp"
+    android:minHeight="124dp"
+    android:minResizeWidth="124dp"
+    android:minResizeHeight="124dp"
+    android:previewLayout="@layout/lock_small"
     android:targetCellWidth="2"
     android:targetCellHeight="2"
     android:updatePeriodMillis="1800000"
-    android:widgetCategory="keyguard" />
+    android:widgetCategory="0x2000"
+    app:monotonePreviewLayoutSmall="@layout/lock_small"
+    app:monotonePreviewLayoutMedium="@layout/lock_small"
+    app:targetHost="lock_and_aod|cover"
+    app:widgetSize="small|medium"
+    app:widgetStyle="monotone" />

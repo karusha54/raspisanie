@@ -33,22 +33,46 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <receiver android:name=".LockWidgetWide" android:exported="true" android:label="Расписание">
+        <receiver android:name=".LockWidgetTiny" android:exported="true" android:label="Расписание 1×1">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/lock_tiny_info" />
+            <meta-data
+                android:name="samsung.appwidget.monotone.info"
+                android:resource="@xml/lock_tiny_oneui" />
+        </receiver>
+
+        <receiver android:name=".LockWidgetWide" android:exported="true" android:label="Расписание 2×1">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/lock_wide_info" />
+            <meta-data
+                android:name="samsung.appwidget.monotone.info"
+                android:resource="@xml/lock_wide_oneui" />
         </receiver>
 
-        <receiver android:name=".LockWidgetSmall" android:exported="true" android:label="Расписание">
+        <receiver android:name=".LockWidgetSmall" android:exported="true" android:label="Расписание 2×2">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/lock_small_info" />
+            <meta-data
+                android:name="samsung.appwidget.monotone.info"
+                android:resource="@xml/lock_small_oneui" />
+        </receiver>
+
+        <receiver android:name=".LockServiceBoxReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.samsung.android.intent.action.REQUEST_SERVICEBOX_REMOTEVIEWS" />
+            </intent-filter>
         </receiver>
     </application>
 </manifest>

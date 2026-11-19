@@ -52,14 +52,24 @@ class ScheduleWidget : AppWidgetProvider() {
                 mgr.updateAppWidget(home, build(c, st, now))
                 any = true
             }
+            var lock = false
+            val tiny = mgr.getAppWidgetIds(ComponentName(c, LockWidgetTiny::class.java))
+            if (tiny.isNotEmpty()) {
+                mgr.updateAppWidget(tiny, LockViews.tiny(c, st, now))
+                lock = true
+            }
             val wide = mgr.getAppWidgetIds(ComponentName(c, LockWidgetWide::class.java))
             if (wide.isNotEmpty()) {
                 mgr.updateAppWidget(wide, LockViews.wide(c, st, now))
-                any = true
+                lock = true
             }
             val small = mgr.getAppWidgetIds(ComponentName(c, LockWidgetSmall::class.java))
             if (small.isNotEmpty()) {
                 mgr.updateAppWidget(small, LockViews.small(c, st, now))
+                lock = true
+            }
+            if (lock) {
+                LockViews.pushServiceBox(c, st, now)
                 any = true
             }
             if (any) scheduleNext(c, st.nextChange)
