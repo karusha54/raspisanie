@@ -13,7 +13,6 @@
     android:updatePeriodMillis="1800000"
     android:widgetCategory="0x2000"
     app:monotonePreviewLayoutSmall="@layout/lock_wide"
-    app:monotonePreviewLayoutMedium="@layout/lock_wide"
     app:targetHost="lock_and_aod|cover"
-    app:widgetSize="small|medium"
+    app:widgetSize="small"
     app:widgetStyle="monotone" />

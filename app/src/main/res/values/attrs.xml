@@ -20,6 +20,8 @@
     <attr name="initialLayoutTiny" format="reference" />
     <attr name="initialLayoutSmall" format="reference" />
     <attr name="initialLayoutMedium" format="reference" />
+    <attr name="initialLayoutWideSmall" format="reference" />
+    <attr name="initialLayoutLarge" format="reference" />
     <attr name="monotoneInitialLayoutTiny" format="reference" />
     <attr name="monotoneInitialLayoutSmall" format="reference" />
     <attr name="monotoneInitialLayoutMedium" format="reference" />

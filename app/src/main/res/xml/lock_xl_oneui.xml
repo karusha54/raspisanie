@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<samsung-appwidget-info xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:allowMultipleSizes="true"
+    app:initialLayoutWideSmall="@layout/lock_xl"
+    app:previewLayoutWideSmall="@layout/lock_xl"
+    app:targetHost="lock_and_aod|cover"
+    app:widgetSize="wideSmall" />

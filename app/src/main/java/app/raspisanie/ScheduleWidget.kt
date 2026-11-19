@@ -68,6 +68,11 @@ class ScheduleWidget : AppWidgetProvider() {
                 mgr.updateAppWidget(small, LockViews.small(c, st, now))
                 lock = true
             }
+            val xl = mgr.getAppWidgetIds(ComponentName(c, LockWidgetXl::class.java))
+            if (xl.isNotEmpty()) {
+                mgr.updateAppWidget(xl, LockViews.xl(c, st, now))
+                lock = true
+            }
             if (lock) {
                 LockViews.pushServiceBox(c, st, now)
                 any = true

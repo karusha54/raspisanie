@@ -69,6 +69,18 @@
                 android:resource="@xml/lock_small_oneui" />
         </receiver>
 
+        <receiver android:name=".LockWidgetXl" android:exported="true" android:label="Расписание 4×1">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/lock_xl_info" />
+            <meta-data
+                android:name="samsung.appwidget.monotone.info"
+                android:resource="@xml/lock_xl_oneui" />
+        </receiver>
+
         <receiver android:name=".LockServiceBoxReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="com.samsung.android.intent.action.REQUEST_SERVICEBOX_REMOTEVIEWS" />

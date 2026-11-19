@@ -33,6 +33,13 @@ class LockWidgetSmall : AppWidgetProvider() {
     }
 }
 
+/** Экран блокировки Samsung: 4x1 (широкий, пробуем). */
+class LockWidgetXl : AppWidgetProvider() {
+    override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
+        ScheduleWidget.refresh(context)
+    }
+}
+
 /** SystemUI Samsung просит у приложения RemoteViews для экрана блокировки и AOD. */
 class LockServiceBoxReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -57,15 +64,21 @@ object LockViews {
     const val PAGE_TINY = "raspisanie_lock_1x1"
     const val PAGE_WIDE = "raspisanie_lock_2x1"
     const val PAGE_SMALL = "raspisanie_lock_2x2"
-    val PAGE_IDS = listOf(PAGE_TINY, PAGE_WIDE, PAGE_SMALL)
+    const val PAGE_XL = "raspisanie_lock_4x1"
+    val PAGE_IDS = listOf(PAGE_TINY, PAGE_WIDE, PAGE_SMALL, PAGE_XL)
 
     private val hm = DateTimeFormatter.ofPattern("H:mm")
 
     private class Pick(val label: String, val item: Item?)
 
-    private fun pick(st: State): Pick = when {
+    private fun pick(st: State, today: LocalDate): Pick = when {
         st.current != null -> Pick("Сейчас:", st.current)
-        st.upcoming.isNotEmpty() -> Pick("Дальше:", st.upcoming[0])
+        st.upcoming.isNotEmpty() -> {
+            val it0 = st.upcoming[0]
+            val d = it0.startAt.toLocalDate()
+            val label = if (d == today) "Дальше:" else Schedule.dayPrefix(d, today).removeSuffix(", ") + ":"
+            Pick(label, it0)
+        }
         else -> Pick("Расписание", null)
     }
 
@@ -74,14 +87,16 @@ object LockViews {
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
-    private fun timeLine(item: Item, today: LocalDate, withRoom: Boolean): String {
-        val base = Schedule.dayPrefix(item.startAt.toLocalDate(), today) + Schedule.time(item)
+    private fun timeLine(item: Item, withRoom: Boolean): String {
+        val base = Schedule.time(item)
         return if (withRoom && item.room.isNotBlank()) "$base / каб. ${item.room}" else base
     }
 
+    private fun shortTime(item: Item): String = item.startAt.format(hm) + "–" + item.endAt.format(hm)
+
     fun tiny(c: Context, st: State, now: LocalDateTime): RemoteViews {
         val rv = RemoteViews(c.packageName, R.layout.lock_tiny)
-        val item = pick(st).item
+        val item = pick(st, now.toLocalDate()).item
         if (item == null) {
             rv.setTextViewText(R.id.tvTitle, "-")
             rv.setTextViewText(R.id.tvSub, "")
@@ -97,8 +112,7 @@ object LockViews {
 
     fun wide(c: Context, st: State, now: LocalDateTime): RemoteViews {
         val rv = RemoteViews(c.packageName, R.layout.lock_wide)
-        val today = now.toLocalDate()
-        val p = pick(st)
+        val p = pick(st, now.toLocalDate())
         val item = p.item
         rv.setTextViewText(R.id.tvStatus, p.label)
         if (item == null) {
@@ -106,7 +120,23 @@ object LockViews {
             rv.setTextViewText(R.id.tvSub, "")
         } else {
             rv.setTextViewText(R.id.tvTitle, item.title)
-            rv.setTextViewText(R.id.tvSub, timeLine(item, today, true))
+            rv.setTextViewText(R.id.tvSub, shortTime(item))
+        }
+        rv.setOnClickPendingIntent(R.id.root, openApp(c))
+        return rv
+    }
+
+    fun xl(c: Context, st: State, now: LocalDateTime): RemoteViews {
+        val rv = RemoteViews(c.packageName, R.layout.lock_xl)
+        val p = pick(st, now.toLocalDate())
+        val item = p.item
+        rv.setTextViewText(R.id.tvStatus, p.label)
+        if (item == null) {
+            rv.setTextViewText(R.id.tvTitle, "Нет уроков")
+            rv.setTextViewText(R.id.tvSub, "")
+        } else {
+            rv.setTextViewText(R.id.tvTitle, item.title)
+            rv.setTextViewText(R.id.tvSub, timeLine(item, true))
         }
         rv.setOnClickPendingIntent(R.id.root, openApp(c))
         return rv
@@ -114,8 +144,7 @@ object LockViews {
 
     fun small(c: Context, st: State, now: LocalDateTime): RemoteViews {
         val rv = RemoteViews(c.packageName, R.layout.lock_small)
-        val today = now.toLocalDate()
-        val p = pick(st)
+        val p = pick(st, now.toLocalDate())
         val item = p.item
         rv.setTextViewText(R.id.tvStatus, p.label)
         if (item == null) {
@@ -124,7 +153,7 @@ object LockViews {
             rv.setViewVisibility(R.id.tvRoom, View.GONE)
         } else {
             rv.setTextViewText(R.id.tvTitle, item.title)
-            rv.setTextViewText(R.id.tvSub, timeLine(item, today, false))
+            rv.setTextViewText(R.id.tvSub, timeLine(item, false))
             if (item.room.isBlank()) {
                 rv.setViewVisibility(R.id.tvRoom, View.GONE)
             } else {
@@ -140,6 +169,7 @@ object LockViews {
         when (pageId) {
             PAGE_TINY -> tiny(c, st, now)
             PAGE_WIDE -> wide(c, st, now)
+            PAGE_XL -> xl(c, st, now)
             else -> small(c, st, now)
         }
 
